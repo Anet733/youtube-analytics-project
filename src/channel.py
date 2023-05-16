@@ -16,7 +16,7 @@ class Channel:
         self.channel = youtube.channels().list(id=self.channel_id, part='snippet,statistics').execute()
         self.title = self.channel['items'][0]['snippet']['title']
         self.channel_description = self.channel['items'][0]['snippet']['description']
-        self.url = self.channel['items'][0]['snippet']['thumbnails']['default']['url']
+        self.url = f"https://www.youtube.com/channel/{self.channel['items'][0]['id']}"
         self.channel_qty_sub = self.channel['items'][0]['statistics']['subscriberCount']
         self.video_count = self.channel['items'][0]['statistics']['videoCount']
         self.channel_qty_views = self.channel['items'][0]['statistics']['viewCount']
@@ -28,9 +28,11 @@ class Channel:
 
     @classmethod
     def get_service(cls):
+        """Возвращает объект для работы с YouTube API"""
         return cls.youtube
 
     def to_json(self, filename):
+        """Сохраняет значения атрибутов экземпляра Channel в файл в формате JSON."""
         data = {
             "channel_id": self.channel_id,
             "title": self.title,
