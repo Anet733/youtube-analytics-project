@@ -2,18 +2,17 @@ import os
 import json
 from googleapiclient.discovery import build
 
-from helper.youtube_api_manual import youtube
-api_key: str = os.getenv('YT_API_KEY')
 
 class Channel:
     """Класс для ютуб-канала"""
 
+    api_key: str = os.getenv('YT_API_KEY')
     youtube = build('youtube', 'v3', developerKey=api_key)
 
     def __init__(self, channel_id: str) -> None:
         """Экземпляр инициализируется id канала. Дальше все данные будут подтягиваться по API."""
-        self.channel_id = channel_id
-        self.channel = youtube.channels().list(id=self.channel_id, part='snippet,statistics').execute()
+        self.__channel_id = channel_id
+        self.channel = self.youtube.channels().list(id=self.__channel_id, part='snippet,statistics').execute()
         self.title = self.channel['items'][0]['snippet']['title']
         self.channel_description = self.channel['items'][0]['snippet']['description']
         self.url = f"https://www.youtube.com/channel/{self.channel['items'][0]['id']}"
@@ -23,7 +22,7 @@ class Channel:
 
     def print_info(self) -> None:
         """Выводит в консоль информацию о канале."""
-        channel = youtube.channels().list(id=self.channel_id, part='snippet,statistics').execute()
+        channel = self.youtube.channels().list(id=self.__channel_id, part='snippet,statistics').execute()
         return print(json.dumps(channel, indent=2, ensure_ascii=False))
 
     @classmethod
@@ -34,7 +33,7 @@ class Channel:
     def to_json(self, filename):
         """Сохраняет значения атрибутов экземпляра Channel в файл в формате JSON."""
         data = {
-            "channel_id": self.channel_id,
+            "channel_id": self.__channel_id,
             "title": self.title,
             "description": self.channel_description,
             "url": self.url,
@@ -46,3 +45,10 @@ class Channel:
         with open(filename, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False)
         return data
+
+    @property
+    def channel_id(self):
+        return self.__channel_id
+
+
+
