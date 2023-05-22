@@ -16,7 +16,7 @@ class Channel:
         self.title = self.channel['items'][0]['snippet']['title']
         self.channel_description = self.channel['items'][0]['snippet']['description']
         self.url = f"https://www.youtube.com/channel/{self.channel['items'][0]['id']}"
-        self.channel_qty_sub = self.channel['items'][0]['statistics']['subscriberCount']
+        self.channel_qty_sub = int(self.channel['items'][0]['statistics']['subscriberCount'])
         self.video_count = self.channel['items'][0]['statistics']['videoCount']
         self.channel_qty_views = self.channel['items'][0]['statistics']['viewCount']
 
@@ -50,5 +50,31 @@ class Channel:
     def channel_id(self):
         return self.__channel_id
 
+    def __str__(self):
+        """Возвращающий название и ссылку на канал по шаблону"""
+        return f'{self.title} ({self.url})'
 
+    def __add__(self, other):
+        """Сложение количества подписчиков"""
+        return self.channel_qty_sub + other.channel_qty_sub
+
+    def __sub__(self, other):
+        """Возвращает разность подписчиков двух объектов"""
+        return self.channel_qty_sub - other.channel_qty_sub
+
+    def __lt__(self, other):
+        """Сравнение количества подписчиков меньше"""
+        return self.channel_qty_sub < other.channel_qty_sub
+
+    def __le__(self, other):
+        """Сравнение количества подписчиков меньше или равно"""
+        return self.channel_qty_sub <= other.channel_qty_sub
+
+    def __gt__(self, other):
+        """Сравнение количества подписчиков больше"""
+        return self.channel_qty_sub > other.channel_qty_sub
+
+    def __ge__(self, other):
+        """Сравнение количества подписчиков больше или равно"""
+        return self.channel_qty_sub >= other.channel_qty_sub
 
